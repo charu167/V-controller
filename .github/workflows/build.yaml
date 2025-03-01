@@ -1,5 +1,8 @@
 name: Build and Push to Dockerhub
 
+env:
+  IMAGE_NAME: controller
+
 on:
   push:
     branches:
@@ -9,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Cehckout Code
+      - name: Checkout Code
         uses: actions/checkout@v2
       
       - name: Login to Dockerhub
