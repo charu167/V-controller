@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import { sendNotification } from "../../websocket/websocketManager";
 
 // Interfaces
@@ -9,18 +9,19 @@ interface ReqBody {
   error?: string;
 }
 
-export default async function videoNotificationController(
+export default function videoNotificationController(
   req: Request,
   res: Response
 ) {
   try {
-    const data = req.body as ReqBody;
+    const data = req.body;
 
     // Validate request body
     if (!data.userId || !data.videoId || !data.status) {
-      return res
+      res
         .status(400)
         .json({ message: "userId, videoId, and status are required" });
+      return;
     }
 
     // Build the appropriate message
@@ -38,9 +39,10 @@ export default async function videoNotificationController(
         message: `Video processing failed: ${data.error || "Unknown error"}`,
       };
     } else {
-      return res
+      res
         .status(400)
         .json({ message: "Invalid status. Must be 'completed' or 'failed'." });
+      return;
     }
 
     // Send WebSocket notification
@@ -48,16 +50,16 @@ export default async function videoNotificationController(
     const sent = sendNotification(userId, message);
 
     if (sent) {
-      return res
-        .status(200)
-        .json({ message: "Notification sent successfully" });
+      res.status(200).json({ message: "Notification sent successfully" });
     } else {
-      return res
+      res
         .status(200)
         .json({ message: "User is offline, notification not sent" });
     }
+    return;
   } catch (error) {
     console.error("Error in videoNotificationController:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
+    return;
   }
 }
