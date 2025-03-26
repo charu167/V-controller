@@ -22,28 +22,22 @@ export default async function signin(req: Request, res: Response) {
     });
 
     if (!user) {
-       res.status(401).json({ message: "Invalid email or password" });
-       return
+      res.status(401).json({ message: "Invalid email or password" });
+      return;
     }
 
     // Compare passwords
     const isPasswordValid = await bcrypt.compare(data.password, user.password);
     if (!isPasswordValid) {
-       res.status(401).json({ message: "Invalid email or password" });
+      res.status(401).json({ message: "Invalid email or password" });
     }
 
     // Generate tokens
     const accessToken = createAccessToken(user.id);
     const refreshToken = createRefreshToken(user.id);
 
-     res.status(200).json({
+    res.status(200).json({
       message: "Sign-in successful",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        roles: user.roles.map((role) => role.type),
-      },
       tokens: {
         access: accessToken,
         refresh: refreshToken,
@@ -51,6 +45,6 @@ export default async function signin(req: Request, res: Response) {
     });
   } catch (error) {
     console.error("Signin Error:", error);
-     res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }

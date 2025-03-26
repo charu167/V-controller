@@ -60,13 +60,6 @@ export default async function signup(req: Request, res: Response) {
 
     res.status(201).json({
       message: "User registered successfully",
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        phone: newUser.phone,
-        roles: newUser.roles.map((role) => role.type),
-      },
       tokens: {
         access: accessToken,
         refresh: refreshToken,
