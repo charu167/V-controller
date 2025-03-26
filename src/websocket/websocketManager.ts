@@ -1,10 +1,13 @@
 import { Server } from "http";
 import Websocket from "ws";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.ACCESS_TOKEN_SECRET || "your_secret";
 
 // Interfaces
-interface Data {
-  type: string;
-  userId: number;
+interface RegisterPayload {
+  type: "register";
+  token: string;
 }
 
 const clients = new Map<number, Websocket>(); // userId -> websocketClient
@@ -18,13 +21,23 @@ export function initializeWebSocket(httpServer: Server) {
   websocketServer.on("connection", (websocketClient) => {
     // Listen for messages
     websocketClient.on("message", (message: string) => {
-      const data = JSON.parse(message) as Data;
+      const data = JSON.parse(message) as RegisterPayload;
 
-      // Register the client
-      if (data.type == "register") {
-        clients.set(data.userId, websocketClient);
-        (websocketClient as any).userId = data.userId;
-        websocketClient.send("All set!");
+      if (data.type === "register") {
+        try {
+          const decoded = jwt.verify(data.token, JWT_SECRET) as {
+            userId: number;
+          };
+
+          clients.set(decoded.userId, websocketClient);
+          (websocketClient as any).userId = decoded.userId;
+
+          websocketClient.send("Registered successfully");
+        } catch (err) {
+          console.error("Invalid token:", err);
+          websocketClient.send("Unauthorized");
+          websocketClient.close();
+        }
       }
     });
 

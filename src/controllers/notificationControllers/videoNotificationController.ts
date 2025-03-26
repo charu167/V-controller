@@ -17,10 +17,8 @@ export default function videoNotificationController(
     const data = req.body;
 
     // Validate request body
-    if (!data.userId || !data.videoId || !data.status) {
-      res
-        .status(400)
-        .json({ message: "userId, videoId, and status are required" });
+    if (!data.userId || !data.status) {
+      res.status(400).json({ message: "userId and status are required" });
       return;
     }
 
@@ -29,8 +27,9 @@ export default function videoNotificationController(
     if (data.status === "completed") {
       message = {
         type: "videoProcessed",
-        videoId: data.videoId,
+        videoId: data.videoId, // optional
         message: "Your video has been successfully processed!",
+        outputVideos: data.outputVideos || {},
       };
     } else if (data.status === "failed") {
       message = {
