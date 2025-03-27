@@ -9,6 +9,7 @@ import notificationRouter from "./routes/notificationRouter";
 // websocket initializer
 import { initializeWebSocket } from "./websocket/websocketManager";
 import userRouter from "./routes/userRouter";
+import scriptRouter from "./routes/scriptRouter";
 
 // Config
 dotenv.config();
@@ -35,3 +36,4 @@ app.get("/", (req: express.Request, res: express.Response) => {
 app.use("/fileUpload", jobRouter);
 app.use("/notification", notificationRouter);
 app.use("/user", userRouter);
+app.use("/script", scriptRouter);
