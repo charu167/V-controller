@@ -51,6 +51,7 @@ docker run -d \\
   -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \\
   -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \\
   -e AWS_REGION=${AWS_REGION} \\
+  -e BASE_URL=https://v-controller.charu-tech.com \\
   -e LOCAL_URL=host.docker.internal \\
   charu167/v-processor:latest
 
