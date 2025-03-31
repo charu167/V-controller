@@ -32,7 +32,9 @@ export function initializeWebSocket(httpServer: Server) {
           clients.set(decoded.userId, websocketClient);
           (websocketClient as any).userId = decoded.userId;
 
-          websocketClient.send("Registered successfully");
+          websocketClient.send(
+            JSON.stringify({ message: "Registered successfully" })
+          );
         } catch (err) {
           console.error("Invalid token:", err);
           websocketClient.send("Unauthorized");
