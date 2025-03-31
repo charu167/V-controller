@@ -16,6 +16,7 @@ export default function videoNotificationController(
   try {
     const data = req.body;
 
+    console.log(`Notification rcvd, data: ${data}`);
     // Validate request body
     if (!data.userId || !data.status) {
       res.status(400).json({ message: "userId and status are required" });
